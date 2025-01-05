@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MY SMART SENTENCE</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin: 20px 0;
+      font-size: 2em;
+    }
+
+    .content-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .slot-machine {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .reel-title {
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      border-radius: 8px;
+      padding: 4px 8px;
+      text-align: center;
+      font-size: 28px;
+      min-height: 40px;
+      line-height: 40px;
+      white-space: nowrap;
+    }
+
+    .reel-title.hidden {
+      visibility: hidden;
+    }
+
+    .reel {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      border: 4px solid #333;
+      border-radius: 20px;
+      background-color: white;
+      overflow: hidden;
+      position: relative;
+      box-sizing: border-box;
+      text-align: center;
+      height: 240px;
+    }
+
+    .images {
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.5s ease;
+    }
+
+    .image-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      box-sizing: border-box;
+      height: 240px;
+      padding: 10px;
+    }
+
+    .image-container img {
+      width: 160px;
+      height: auto;
+    }
+
+    .label {
+      margin-top: 8px;
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 28px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .arrow-button {
+      width: 60px;
+      height: 60px;
+      font-size: 40px;
+      background-color: #f2f2f2;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .arrow-button:hover {
+      background-color: #eee;
+    }
+
+    .arrow-button:active {
+      background-color: #ddd;
+    }
+
+    .sentence-container {
+      text-align: center;
+    }
+
+    h2 {
+      margin: 5px 0;
+      font-size: 2em;
+    }
+
+    #combinedLabels {
+  display: inline-block; /* Make the box size adjust to content */
+  margin-top: 10px;
+  font-size: 2.5em; /* Adjust font size as needed */
+  font-weight: normal; /* Ensure text is not bold */
+  color: #333; /* Text color */
+  padding: 10px 20px; /* Add padding around the text */
+  background-color: #ffffff; /* Background color */
+  border: 2px solid #ccc; /* Add a border */
+  border-radius: 10px; /* Round corners */
+  text-align: center; /* Center text */
+}
+h1 {
+    margin: 0;
+    margin-bottom: 20px; /* Add spacing below the wrapping */
+    padding: 20px 0; /* Adjust padding for vertical spacing */
+    font-size: 2em; /* Adjust font size as needed */
+    text-align: center; /* Center the text */
+    background-color: #3366FF; /* Set the background color */
+    color: #FFFFFF; /* Set the text color */
+    border-bottom: 2px solid #999; /* Optional: Add a border at the bottom */
+    width: 100%; /* Make the background span the full width */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+  }
+  #reel1 .label {
+    background-color: #ffcc00; /* Change to your desired background color */
+    color: #000; /* Change text color for better contrast */
+    border-radius: 8px; /* Keep the rounded corners */
+    padding: 4px 8px; /* Adjust padding if needed */
+  }
+  #reel2 .label {
+    background-color: #4caf50; /* Change to your desired background color */
+    color: #fff; /* Change text color for better contrast */
+    border-radius: 8px; /* Keep the rounded corners */
+    padding: 4px 8px; /* Adjust padding if needed */
+  }
+  #reel3 .label {
+    background-color: #2196f3; /* Change to your desired background color */
+    color: #fff; /* Change text color for better contrast */
+    border-radius: 8px; /* Keep the rounded corners */
+    padding: 4px 8px; /* Adjust padding if needed */
+  }
+  #reel4 .label {
+    background-color: #9c27b0; /* Change to your desired background color */
+    color: #fff; /* Change text color for better contrast */
+    border-radius: 8px; /* Keep the rounded corners */
+    padding: 4px 8px; /* Adjust padding if needed */
+  }
+  #combinedLabels, #grammarFeedback {
+  max-height: 0; /* Collapsed by default */
+  opacity: 0; /* Initially invisible */
+  overflow: hidden; /* Hide content when collapsed */
+  transition: max-height 0.5s ease, opacity 0.5s ease; /* Smooth animations */
+}
+
+#combinedLabels.open, #grammarFeedback.open {
+  max-height: 200px; /* Adjust based on content */
+  opacity: 1; /* Fully visible */
+}
+
+#checkButton {
+  background-color: #4CAF50; /* Green background */
+  color: white; /* White text */
+  border: none; /* Remove border */
+  padding: 12px 24px; /* Add padding for rounded rectangle */
+  font-size: 18px; /* Adjust font size */
+  cursor: pointer; /* Add pointer cursor on hover */
+  border-radius: 20px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Optional: Add subtle shadow */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition effect */
+}
+
+#checkButton:hover {
+  background-color: #45a049; /* Slightly darker green on hover */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3); /* Enhance shadow on hover */
+}
+
+#checkButton:active {
+  background-color: #3e8e41; /* Even darker green when pressed */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduce shadow */
+  transform: translateY(2px); /* Simulate button press */
+}
+
+
+  </style>
+  <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+</head>
+<body>
+  <h1>MY SMART SENTENCE</h1>
+  <audio id="correctSound" src="sounds/correct.mp3"></audio>
+  <audio id="incorrectSound" src="sounds/incorrect.mp3"></audio>
+  
+  <div class="content-container">
+    <!-- Slot Machine -->
+    <div class="slot-machine">
+      <div class="column">
+        <div class="reel-title">Ado</div>
+        <div class="reel" id="reel1">
+          <div class="images" id="images1">
+            <div class="image-container">
+              <img src="images/white.png" alt="Strawberry">
+              <div class="label">There</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="reel-title hidden"></div>
+        <div class="reel" id="reel2">
+          <div class="images" id="images2">
+            <div class="image-container">
+              <img src="images/is.png" alt="Strawberry">
+              <div class="label">is</div>
+            </div>
+            <div class="image-container">
+              <img src="images/are.png" alt="Banana">
+              <div class="label">are</div>
+            </div>
+          </div>
+        </div>
+        <div class="button-group">
+          <button class="arrow-button" onclick="scrollUp(2)">▲</button>
+          <button class="arrow-button" onclick="scrollDown(2)">▼</button>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="reel-title hidden"></div>
+        <div class="reel" id="reel3">
+          <div class="images" id="images3">
+            <div class="image-container">
+              <img src="images/is.png" alt="Strawberry">
+              <div class="label">a</div>
+            </div>
+            <div class="image-container">
+              <img src="images/is.png" alt="Banana">
+              <div class="label">an</div>
+            </div>
+            <div class="image-container">
+              <img src="images/are.png" alt="Orange">
+              <div class="label">some</div>
+            </div>
+            <div class="image-container">
+              <img src="images/are.png" alt="Orange">
+              <div class="label">a lot of</div>
+            </div>
+          </div>
+        </div>
+        <div class="button-group">
+          <button class="arrow-button" onclick="scrollUp(3)">▲</button>
+          <button class="arrow-button" onclick="scrollDown(3)">▼</button>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="reel-title">Gapo</div>
+        <div class="reel" id="reel4">
+          <div class="images" id="images4">
+            <div class="image-container">
+              <img src="images/cat.webp" alt="Strawberry">
+              <div class="label">cat.</div>
+            </div>
+            <div class="image-container">
+              <img src="images/cats.webp" alt="Banana">
+              <div class="label">cats.</div>
+            </div>
+            <div class="image-container">
+              <img src="images/dog.webp" alt="Orange">
+              <div class="label">dog.</div>
+            </div>
+            <div class="image-container">
+              <img src="images/dogs.webp" alt="Apple">
+              <div class="label">dogs.</div>
+            </div>
+            <div class="image-container">
+              <img src="images/rabbit.webp" alt="Pineapple">
+              <div class="label">rabbit.</div>
+            </div>
+            <div class="image-container">
+              <img src="images/rabbits.webp" alt="Mango">
+              <div class="label">rabbits.</div>
+            </div>
+            <div class="image-container">
+              <img src="images/bird.jpeg" alt="Grapes">
+              <div class="label">bird.</div>
+            </div>
+            <div class="image-container">
+              <img src="images/birds.webp" alt="Watermelon">
+              <div class="label">birds.</div>
+            </div>
+            <div class="image-container">
+              <img src="images/cow.webp" alt="Peach">
+              <div class="label">cow.</div>
+            </div>
+            <div class="image-container">
+              <img src="images/cows.webp" alt="Cherry">
+              <div class="label">cows.</div>
+            </div>
+            <div class="image-container">
+              <img src="images/tiger.webp" alt="Cherry">
+              <div class="label">tiger.</div>
+            </div>
+            <div class="image-container">
+              <img src="images/tigers.webp" alt="Cherry">
+              <div class="label">tigers.</div>
+            </div>
+            <div class="image-container">
+              <img src="images/elephant.webp" alt="Cherry">
+              <div class="label">elephant.</div>
+            </div>
+            <div class="image-container">
+              <img src="images/elephants.webp" alt="Cherry">
+              <div class="label">elephants.</div>
+            </div>
+          </div>
+        </div>
+        <div class="button-group">
+          <button class="arrow-button" onclick="scrollUp(4)">▲</button>
+          <button class="arrow-button" onclick="scrollDown(4)">▼</button>
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom: 20px;">
+      <button id="checkButton">Check</button>
+    </div>
+    
+    <!-- Sentence Section -->
+    <div class="sentence-container">
+      <h2>My Sentence</h2>
+      <div id="combinedLabels"></div>
+      <div id="grammarFeedback" style="margin-top: 10px; font-size: 18px; "></div>
+    </div>
+  </div>
+
+  <script>
+    
+    const reelPositions = [0, 0, 0, 0];
+    const reelLabels = [];
+    let currentAudio = null; // Tracks the currently playing audio
+
+    function playSound(soundFile) {
+  // Stop the currently playing sound if it exists
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0; // Reset playback time
+  }
+
+  // Create a new audio object and play the sound
+  currentAudio = new Audio(soundFile);
+  currentAudio.play();
+}
+
+
+    function speak(text) {
+      if (window.responsiveVoice) {
+        responsiveVoice.speak(text, "UK English Male");
+      } else {
+        console.error("ResponsiveVoice API is not available.");
+      }
+    }
+
+    window.onload = function () {
+  const totalReels = 4;
+  for (let reelNumber = 1; reelNumber <= totalReels; reelNumber++) {
+    const containers = document.querySelectorAll(`#images${reelNumber} .image-container`);
+    const labelsForThisReel = Array.from(containers).map(container => {
+      return container.querySelector(".label").textContent.trim();
+    });
+    reelLabels.push(labelsForThisReel);
+  }
+
+  document.getElementById("checkButton").addEventListener("click", () => {
+  const combinedLabelsDiv = document.getElementById("combinedLabels");
+  const grammarFeedbackDiv = document.getElementById("grammarFeedback");
+
+  // Generate the sentence
+  const currentLabels = reelPositions.map((pos, reelIndex) => {
+    return reelLabels[reelIndex][pos];
+  });
+  combinedLabelsDiv.textContent = currentLabels.join(" ");
+
+  // Show combined labels and grammar feedback with animation
+  combinedLabelsDiv.classList.add("open");
+  grammarFeedbackDiv.classList.add("open");
+
+  // Perform grammar check
+  checkGrammar(currentLabels.join(" "));
+});
+
+
+
+
+    
+
+      document.querySelectorAll('.label').forEach(labelEl => {
+        labelEl.addEventListener('click', () => {
+          speak(labelEl.textContent.trim());
+        });
+      });
+    };
+
+    function updateCombinedLabels() {
+      const currentLabels = reelPositions.map((pos, reelIndex) => {
+        return reelLabels[reelIndex][pos];
+      });
+      document.getElementById("combinedLabels").textContent = currentLabels.join(" ");
+    }
+
+    function scrollUp(reelNumber) {
+  const reelIndex = reelNumber - 1;
+  const reelLength = reelLabels[reelIndex].length;
+
+  // Stop currently playing audio
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+  }
+
+  // Adjust reel position
+  reelPositions[reelIndex] = (reelPositions[reelIndex] - 1 + reelLength) % reelLength;
+  const offset = reelPositions[reelIndex] * 240;
+  document.getElementById(`images${reelNumber}`).style.transform = `translateY(-${offset}px)`;
+
+  // Collapse combined labels and feedback
+  document.getElementById("combinedLabels").classList.remove("open");
+  document.getElementById("grammarFeedback").classList.remove("open");
+
+  // Speak the current label
+  const currentLabel = reelLabels[reelIndex][reelPositions[reelIndex]];
+  speak(currentLabel); // Text-to-speech
+}
+
+function scrollDown(reelNumber) {
+  const reelIndex = reelNumber - 1;
+  const reelLength = reelLabels[reelIndex].length;
+
+  // Stop currently playing audio
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+  }
+
+  // Adjust reel position
+  reelPositions[reelIndex] = (reelPositions[reelIndex] + 1) % reelLength;
+  const offset = reelPositions[reelIndex] * 240;
+  document.getElementById(`images${reelNumber}`).style.transform = `translateY(-${offset}px)`;
+
+  // Collapse combined labels and feedback
+  document.getElementById("combinedLabels").classList.remove("open");
+  document.getElementById("grammarFeedback").classList.remove("open");
+
+  // Speak the current label
+  const currentLabel = reelLabels[reelIndex][reelPositions[reelIndex]];
+  speak(currentLabel); // Text-to-speech
+}
+
+
+
+
+
+function checkGrammar(sentence) {
+  const feedbackElement = document.getElementById("grammarFeedback");
+
+  // Define all possible rules
+  const rules = [
+    { pattern: /^There is a (cat|dog|rabbit|bird|cow|tiger)\.$/, feedback: "Correct sentence!", sound: "sounds/correct.mp3" },
+    { pattern: /^There is an (elephant)\.$/, feedback: "Correct sentence!", sound: "sounds/correct.mp3" },
+    { pattern: /^There are (cats|dogs|rabbits|birds|cows|tigers|elephants)\.$/, feedback: "Correct sentence!", sound: "sounds/correct.mp3" },
+    { pattern: /^There are some (cats|dogs|rabbits|birds|cows|tigers|elephants)\.$/, feedback: "Correct sentence!", sound: "sounds/correct.mp3" },
+    { pattern: /^There are a lot of (cats|dogs|rabbits|birds|cows|tigers|elephants)\.$/, feedback: "Correct sentence!", sound: "sounds/correct.mp3" },
+    { pattern: /^There is (cats|dogs|rabbits|birds|cows|tigers|elephants)\.$/, feedback: "Incorrect. Singular 'is' cannot pair with plural nouns.", sound: "sounds/incorrect.mp3" },
+    { pattern: /^There are a (cat|dog|rabbit|bird|cow|tiger)\.$/, feedback: "Incorrect. Plural 'are' cannot pair with singular nouns.", sound: "sounds/incorrect.mp3" },
+    { pattern: /^There is some (cats|dogs|rabbits|birds|cows|tigers|elephants)\.$/, feedback: "Incorrect. Singular 'is' cannot pair with plural quantifier 'some' and plural nouns.", sound: "sounds/incorrect.mp3" },
+    { pattern: /^There is a lot of (cats|dogs|rabbits|birds|cows|tigers|elephants)\.$/, feedback: "Incorrect. Singular 'is' cannot pair with plural quantifier 'a lot of' and plural nouns.", sound: "sounds/incorrect.mp3" },
+    { pattern: /^There is a (cats|dogs|rabbits|birds|cows|tigers|elephants)\.$/, feedback: "Incorrect. Singular 'is' with 'a' cannot pair with plural nouns.", sound: "sounds/incorrect.mp3" },
+    { pattern: /^There is an (cats|dogs|rabbits|birds|cows|tigers|elephants)\.$/, feedback: "Incorrect. 'An' is used with singular nouns starting with vowels.", sound: "sounds/incorrect.mp3" },
+    { pattern: /^There is a lot of (cat|dog|rabbit|bird|cow|tiger|elephant)\.$/, feedback: "Incorrect. 'A lot of' requires a plural noun.", sound: "sounds/incorrect.mp3" }
+  ];
+
+  // Match the sentence against the rules
+  const matchedRule = rules.find(rule => rule.pattern.test(sentence));
+
+  if (matchedRule) {
+    feedbackElement.textContent = matchedRule.feedback;
+    feedbackElement.style.color = matchedRule.feedback.includes("Correct") ? "green" : "red";
+
+    // Play the corresponding sound
+    playSound(matchedRule.sound);
+  } else {
+    feedbackElement.textContent = "Invalid sentence structure. Check subject-verb agreement or quantifier usage.";
+    feedbackElement.style.color = "red";
+
+    // Play the "incorrect" sound by default
+    playSound("sounds/incorrect.mp3");
+  }
+}
+
+
+
+
+// Monitor changes to #combinedLabels
+const observer = new MutationObserver(() => {
+  const combinedLabels = document.getElementById("combinedLabels").textContent.trim();
+  checkGrammar(combinedLabels);
+});
+
+// Start observing the #combinedLabels element
+const combinedLabelsElement = document.getElementById("combinedLabels");
+observer.observe(combinedLabelsElement, { childList: true, subtree: true });
+const observerB = new MutationObserver(() => {
+  const combinedLabelsB = document.getElementById("combinedLabelsB").textContent.trim();
+  checkGrammar(combinedLabelsB, 'B');
+});
+
+const combinedLabelsElementB = document.getElementById("combinedLabelsB");
+observerB.observe(combinedLabelsElementB, { childList: true, subtree: true });
+  </script>
+</body>
+</html>
